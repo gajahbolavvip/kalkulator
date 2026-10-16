@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e9eef5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .kalkulator {
+            background: #222;
+            padding: 20px;
+            border-radius: 15px;
+            width: 280px;
+            box-shadow: 0 5px 15px #999;
+        }
+
+        #layar {
+            width: 100%;
+            box-sizing: border-box;
+            height: 65px;
+            margin-bottom: 15px;
+            font-size: 28px;
+            text-align: right;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .tombol {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        button {
+            height: 55px;
+            font-size: 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #444;
+            color: white;
+        }
+
+        button:hover {
+            background: #666;
+        }
+
+        .operator {
+            background: #ff9800;
+        }
+
+        .hapus {
+            background: #e53935;
+        }
+
+        .hasil {
+            background: #2196f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="kalkulator">
+        <input type="text" id="layar"
+               value="0" readonly>
+
+        <div class="tombol">
+            <button class="hapus" onclick="hapus()">C</button>
+            <button onclick="hapusSatu()">⌫</button>
+            <button onclick="masuk('%')">%</button>
+            <button class="operator" onclick="masuk('/')">÷</button>
+
+            <button onclick="masuk('7')">7</button>
+            <button onclick="masuk('8')">8</button>
+            <button onclick="masuk('9')">9</button>
+            <button class="operator" onclick="masuk('*')">×</button>
+
+            <button onclick="masuk('4')">4</button>
+            <button onclick="masuk('5')">5</button>
+            <button onclick="masuk('6')">6</button>
+            <button class="operator" onclick="masuk('-')">−</button>
+
+            <button onclick="masuk('1')">1</button>
+            <button onclick="masuk('2')">2</button>
+            <button onclick="masuk('3')">3</button>
+            <button class="operator" onclick="masuk('+')">+</button>
+
+            <button onclick="masuk('0')">0</button>
+            <button onclick="masuk('.')">.</button>
+            <button onclick="hapus()">AC</button>
+            <button class="hasil" onclick="hitung()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const layar = document.getElementById("layar");
+
+        function masuk(nilai) {
+            if (layar.value === "Error") {
+                layar.value = "0";
+            }
+
+            if (layar.value === "0" &&
+                !"+-*/%.".includes(nilai)) {
+                layar.value = nilai;
+            } else {
+                layar.value += nilai;
+            }
+        }
+
+        function hapus() {
+            layar.value = "0";
+        }
+
+        function hapusSatu() {
+            layar.value = layar.value.slice(0, -1) || "0";
+        }
+
+        function hitung() {
+            try {
+                const ekspresi = layar.value;
+
+                if (!/^[0-9+\-*/%.() ]+$/.test(ekspresi)) {
+                    throw new Error("Ekspresi tidak valid");
+                }
+
+                const hasil = Function(
+                    '"use strict"; return (' + ekspresi + ')'
+                )();
+
+                if (!Number.isFinite(hasil)) {
+                    throw new Error("Hasil tidak valid");
+                }
+
+                layar.value = String(
+                    Number(hasil.toPrecision(12))
+                );
+            } catch {
+                layar.value = "Error";
+            }
+        }
+    </script>
+</body>
+</html>
